@@ -47,7 +47,7 @@ public class MockData implements RestService {
 
     @Override
     public List<RouteStop> getStops() {
-        return null;
+        return routeStops;
     }
 
     @Override

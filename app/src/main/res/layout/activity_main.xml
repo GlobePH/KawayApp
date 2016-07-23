@@ -9,4 +9,26 @@
         android:id="@+id/mapPlaceHolder"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/pickRouteButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:elevation="4dp"
+            android:text="Pick a Route!" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/routeList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:elevation="8dp"
+            android:visibility="gone" />
+    </RelativeLayout>
 </RelativeLayout>

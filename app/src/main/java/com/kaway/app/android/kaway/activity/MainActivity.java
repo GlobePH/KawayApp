@@ -3,14 +3,15 @@ package com.kaway.app.android.kaway.activity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
+import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.kaway.app.android.kaway.R;
 import com.kaway.app.android.kaway.data.MockData;
 import com.kaway.app.android.kaway.helper.RouteProcessor;
@@ -18,6 +19,7 @@ import com.kaway.app.android.kaway.model.Jeep;
 import com.kaway.app.android.kaway.model.Route;
 import com.kaway.app.android.kaway.model.RouteStop;
 import com.kaway.app.android.kaway.model.User;
+import com.kaway.app.android.kaway.service.RestService;
 
 import java.util.List;
 
@@ -26,8 +28,10 @@ public class MainActivity extends AppCompatActivity {
     SupportMapFragment mapFragment;
     GoogleMap map;
     OnMapReadyCallback mapReadyCallback;
+    RecyclerView routeList;
+    Button pickRouteButton;
 
-    MockData mockData = new MockData();
+    RestService mockData = new MockData();
     List<Route> routes;
     List<RouteStop> routeStops;
     List<Jeep> jeeps;
@@ -35,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
 
     LatLng initialLocation; //Arbitrary for now
     float initialZoom = 18f;
+
+    boolean routeListIsShowing = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,7 +50,24 @@ public class MainActivity extends AppCompatActivity {
         init();
     }
 
+    @Override
+    public void onBackPressed() {
+        if (routeListIsShowing) {
+            routeListIsShowing = false;
+            routeList.setVisibility(View.GONE);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
     private void init() {
+        routeList = (RecyclerView) findViewById(R.id.routeList);
+        pickRouteButton = (Button) findViewById(R.id.pickRouteButton);
+        pickRouteButton.setOnClickListener(v -> {
+            routeList.setVisibility(View.VISIBLE);
+            routeListIsShowing = true;
+        });
+
         mapFragment = SupportMapFragment.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.mapPlaceHolder, mapFragment);
@@ -57,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeMapItems() {
         routes = mockData.getRoutes();
-        routeStops = mockData.getRouteStops();
+        routeStops = mockData.getStops();
         jeeps = mockData.getJeeps();
         user = mockData.getUser(0);
         initialLocation = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
