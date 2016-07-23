@@ -14,6 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.kaway.app.android.kaway.R;
 import com.kaway.app.android.kaway.data.MockData;
 import com.kaway.app.android.kaway.helper.RouteProcessor;
+import com.kaway.app.android.kaway.model.Jeep;
 import com.kaway.app.android.kaway.model.Route;
 import com.kaway.app.android.kaway.model.RouteStop;
 
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
     MockData mockData = new MockData();
     List<Route> routes;
     List<RouteStop> routeStops;
+    List<Jeep> jeeps;
     MarkerOptions userMarker;
 
     LatLng initialLocation = new LatLng(14.550801f, 121.049578f); //Arbitrary for now
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private void initializeMapItems() {
         routes = mockData.getRoutes();
         routeStops = mockData.getRouteStops();
+        jeeps = mockData.getJeeps();
     }
 
     private void drawLines() {
@@ -69,6 +72,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void drawJeeps() {
+        for (Jeep jeep : jeeps) {
+            map.addMarker(RouteProcessor.processJeep(jeep));
+        }
+    }
+
     class MapReadyCallback implements OnMapReadyCallback {
         @Override
         public void onMapReady(GoogleMap googleMap) {
@@ -78,25 +87,13 @@ public class MainActivity extends AppCompatActivity {
 
             drawLines();
             drawStops();
+            drawJeeps();
 
             //Init mock user
             userMarker = new MarkerOptions()
                     .position(initialLocation)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.user_flat));
             map.addMarker(userMarker);
-
-            mockJeeps();
         }
-    }
-
-    private void mockJeeps() {
-        //Init mock jeeps
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(14.549660f, 121.049173f))
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.jeepney_icon)));
-
-        map.addMarker(new MarkerOptions()
-                .position(new LatLng(14.549203f, 121.052839f))
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.jeepney_icon)));
     }
 }

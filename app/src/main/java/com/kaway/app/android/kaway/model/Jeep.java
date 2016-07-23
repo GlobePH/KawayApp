@@ -6,6 +6,13 @@ public class Jeep {
     Route route;
     RoutePoint location;
 
+    public Jeep(long id, String name, Route route, RoutePoint location) {
+        this.id = id;
+        this.name = name;
+        this.route = route;
+        this.location = location;
+    }
+
     public long getId() {
         return id;
     }

@@ -2,6 +2,7 @@ package com.kaway.app.android.kaway.data;
 
 
 import com.google.android.gms.maps.model.LatLng;
+import com.kaway.app.android.kaway.model.Jeep;
 import com.kaway.app.android.kaway.model.Route;
 import com.kaway.app.android.kaway.model.RouteColor;
 import com.kaway.app.android.kaway.model.RouteLine;
@@ -15,11 +16,15 @@ public class MockData {
 
     List<Route> routes = new ArrayList<>();
     List<RouteStop> routeStops = new ArrayList<>();
+    List<Jeep> jeeps = new ArrayList<>();
 
     public MockData() {
         routes.add(createFirstMockRoute());
         routes.add(createSecondMockRoute());
         routeStops = createRouteStops();
+
+        jeeps.add(new Jeep(0, "Blue Jeep", routes.get(0), new RoutePoint(new LatLng(14.549660f, 121.049173f))));
+        jeeps.add(new Jeep(1, "Red Jeep", routes.get(1), new RoutePoint(new LatLng(14.549203f, 121.052839f))));
     }
 
     public List<Route> getRoutes() {
@@ -37,6 +42,10 @@ public class MockData {
 
     public List<RouteStop> getRouteStops() {
         return routeStops;
+    }
+
+    public List<Jeep> getJeeps() {
+        return jeeps;
     }
 
     public List<RouteStop> createRouteStops() {
