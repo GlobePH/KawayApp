@@ -13,7 +13,9 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="16dp">
 
         <Button
             android:id="@+id/pickRouteButton"
@@ -27,9 +29,24 @@
             android:id="@+id/routeList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginBottom="16dp"
             android:background="#FFFFFF"
             android:elevation="8dp"
             android:focusable="true"
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/kawayButton"
+            android:layout_width="192dp"
+            android:layout_height="192dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="64dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:scaleType="fitCenter"
+            android:src="@drawable/kaway_bg"
             android:visibility="gone" />
     </RelativeLayout>
 </RelativeLayout>

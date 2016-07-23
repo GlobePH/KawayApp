@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     OnMapReadyCallback mapReadyCallback;
     RecyclerView routeList;
     Button pickRouteButton;
+    View kawayButton;
 
     RestService mockData = new MockData();
     List<Route> routes;
@@ -66,6 +67,8 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (routeListIsShowing) {
             dismissRouteList();
+        } else if (isRoutePicked) {
+            hideKaway();
         } else {
             super.onBackPressed();
         }
@@ -80,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
+        kawayButton = findViewById(R.id.kawayButton);
         routeList = (RecyclerView) findViewById(R.id.routeList);
         pickRouteButton = (Button) findViewById(R.id.pickRouteButton);
         if (pickRouteButton != null) {
@@ -88,6 +92,9 @@ public class MainActivity extends AppCompatActivity {
                 final Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_enter);
                 routeList.setVisibility(View.VISIBLE);
                 routeList.setAnimation(slideUp);
+                if (isRoutePicked) {
+                    hideKaway();
+                }
                 if (map != null) {
                     map.getUiSettings().setAllGesturesEnabled(false);
                 }
@@ -209,8 +216,27 @@ public class MainActivity extends AppCompatActivity {
             routeText.setText(route.getName());
             view.setOnClickListener(v -> {
                 dismissRouteList();
+                isRoutePicked = true;
                 Toast.makeText(MainActivity.this, "Route: " + route.getName() + " is Picked", Toast.LENGTH_SHORT).show();
+                showKaway();
             });
         }
+    }
+
+    private void showKaway() {
+        final Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_enter);
+        kawayButton.setVisibility(View.VISIBLE);
+        kawayButton.setAnimation(slideUp);
+        if (map != null) {
+            map.getUiSettings().setAllGesturesEnabled(false);
+        }
+    }
+
+    private void hideKaway() {
+        isRoutePicked = false;
+        final Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_exit);
+        kawayButton.setAnimation(slideDown);
+        kawayButton.setVisibility(View.GONE);
+        resetMapGestures();
     }
 }
