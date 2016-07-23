@@ -17,6 +17,7 @@ import com.kaway.app.android.kaway.helper.RouteProcessor;
 import com.kaway.app.android.kaway.model.Jeep;
 import com.kaway.app.android.kaway.model.Route;
 import com.kaway.app.android.kaway.model.RouteStop;
+import com.kaway.app.android.kaway.model.User;
 
 import java.util.List;
 
@@ -30,9 +31,9 @@ public class MainActivity extends AppCompatActivity {
     List<Route> routes;
     List<RouteStop> routeStops;
     List<Jeep> jeeps;
-    MarkerOptions userMarker;
+    User user;
 
-    LatLng initialLocation = new LatLng(14.550801f, 121.049578f); //Arbitrary for now
+    LatLng initialLocation; //Arbitrary for now
     float initialZoom = 18f;
 
     @Override
@@ -58,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
         routes = mockData.getRoutes();
         routeStops = mockData.getRouteStops();
         jeeps = mockData.getJeeps();
+        user = mockData.getUser();
+        initialLocation = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
     }
 
     private void drawLines() {
@@ -78,6 +81,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void drawUser() {
+        map.addMarker(RouteProcessor.processUser(user));
+    }
+
     class MapReadyCallback implements OnMapReadyCallback {
         @Override
         public void onMapReady(GoogleMap googleMap) {
@@ -88,12 +95,7 @@ public class MainActivity extends AppCompatActivity {
             drawLines();
             drawStops();
             drawJeeps();
-
-            //Init mock user
-            userMarker = new MarkerOptions()
-                    .position(initialLocation)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.user_flat));
-            map.addMarker(userMarker);
+            drawUser();
         }
     }
 }

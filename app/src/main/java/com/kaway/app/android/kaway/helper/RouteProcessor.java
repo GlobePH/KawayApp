@@ -9,6 +9,7 @@ import com.kaway.app.android.kaway.model.Jeep;
 import com.kaway.app.android.kaway.model.Route;
 import com.kaway.app.android.kaway.model.RouteLine;
 import com.kaway.app.android.kaway.model.RouteStop;
+import com.kaway.app.android.kaway.model.User;
 
 import java.util.List;
 
@@ -36,5 +37,11 @@ public class RouteProcessor {
         return new MarkerOptions()
                 .position(new LatLng(jeep.getLocation().getLat(), jeep.getLocation().getLng()))
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.jeepney_icon));
+    }
+
+    public static MarkerOptions processUser(User user) {
+        return new MarkerOptions()
+                .position(new LatLng(user.getLocation().getLat(), user.getLocation().getLng()))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.user_flat));
     }
 }
