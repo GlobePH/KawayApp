@@ -9,11 +9,12 @@ import com.kaway.app.android.kaway.model.RouteLine;
 import com.kaway.app.android.kaway.model.RoutePoint;
 import com.kaway.app.android.kaway.model.RouteStop;
 import com.kaway.app.android.kaway.model.User;
+import com.kaway.app.android.kaway.service.RestService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockData {
+public class MockData implements RestService {
 
     List<Route> routes = new ArrayList<>();
     List<RouteStop> routeStops = new ArrayList<>();
@@ -44,6 +45,20 @@ public class MockData {
         return null;
     }
 
+    @Override
+    public List<RouteStop> getStops() {
+        return null;
+    }
+
+    @Override
+    public RouteStop getStop(long id) {
+        for (RouteStop routeStop : routeStops) {
+            if (routeStop.getId() == id)
+                return routeStop;
+        }
+        return null;
+    }
+
     public List<RouteStop> getRouteStops() {
         return routeStops;
     }
@@ -52,7 +67,17 @@ public class MockData {
         return jeeps;
     }
 
-    public User getUser() {
+    @Override
+    public Jeep getJeep(long id) {
+        for (Jeep jeep : jeeps) {
+            if (jeep.getId() == id)
+                return jeep;
+        }
+        return null;
+    }
+
+    @Override
+    public User getUser(long id) {
         return user;
     }
 

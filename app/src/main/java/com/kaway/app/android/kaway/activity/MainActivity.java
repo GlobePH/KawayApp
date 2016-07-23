@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         routes = mockData.getRoutes();
         routeStops = mockData.getRouteStops();
         jeeps = mockData.getJeeps();
-        user = mockData.getUser();
+        user = mockData.getUser(0);
         initialLocation = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
     }
 
