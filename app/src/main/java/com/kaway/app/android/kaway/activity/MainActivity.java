@@ -8,7 +8,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.kaway.app.android.kaway.R;
 import com.kaway.app.android.kaway.data.MockData;
 import com.kaway.app.android.kaway.helper.RouteProcessor;
@@ -26,9 +28,10 @@ public class MainActivity extends AppCompatActivity {
     MockData mockData = new MockData();
     List<Route> routes;
     List<RouteStop> routeStops;
+    MarkerOptions userMarker;
 
-    LatLng initialLocation = new LatLng(14.5511021, 121.0493267); //Arbitrary for now
-    float initialZoom = 16f;
+    LatLng initialLocation = new LatLng(14.550801f, 121.049578f); //Arbitrary for now
+    float initialZoom = 18f;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +78,12 @@ public class MainActivity extends AppCompatActivity {
 
             drawLines();
             drawStops();
+
+            //Init mock user
+            userMarker = new MarkerOptions()
+                    .position(initialLocation)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.user_flat));
+            map.addMarker(userMarker);
         }
     }
 }

@@ -49,7 +49,7 @@ public class MockData {
         routeStops.add(new RouteStop(6, "Red Second Stop", new RoutePoint(14.551844f, 121.050885f)));
         routeStops.add(new RouteStop(7, "Red Third Stop", new RoutePoint(14.551239f, 121.052709f)));
         routeStops.add(new RouteStop(8, "Red Fourth Stop", new RoutePoint(14.549888f, 121.053044f)));
-        routeStops.add(new RouteStop(9, "Red Fifth Stop", new RoutePoint(14.548611f, 121.051545f)));
+        routeStops.add(new RouteStop(9, "Red Fifth Stop", new RoutePoint(14.549303f, 121.051520f)));
         routeStops.add(new RouteStop(10, "Red Sixth Stop", new RoutePoint(14.549721f, 121.050197f)));
         routeStops.add(new RouteStop(11, "Red Seventh Stop", new RoutePoint(14.550416f, 121.048419f)));
 
@@ -125,7 +125,7 @@ public class MockData {
         routeStops.add(new RouteStop(6, "Red Second Stop", new RoutePoint(14.551844f, 121.050885f)));
         routeStops.add(new RouteStop(7, "Red Third Stop", new RoutePoint(14.551239f, 121.052709f)));
         routeStops.add(new RouteStop(8, "Red Fourth Stop", new RoutePoint(14.549888f, 121.053044f)));
-        routeStops.add(new RouteStop(9, "Red Fifth Stop", new RoutePoint(14.548611f, 121.051545f)));
+        routeStops.add(new RouteStop(9, "Red Fifth Stop", new RoutePoint(14.549303f, 121.051520f)));
         routeStops.add(new RouteStop(10, "Red Sixth Stop", new RoutePoint(14.549721f, 121.050197f)));
         routeStops.add(new RouteStop(11, "Red Seventh Stop", new RoutePoint(14.550416f, 121.048419f)));
         route.setRouteStops(routeStops);

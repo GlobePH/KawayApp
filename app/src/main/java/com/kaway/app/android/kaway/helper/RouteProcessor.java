@@ -1,8 +1,10 @@
 package com.kaway.app.android.kaway.helper;
 
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.kaway.app.android.kaway.R;
 import com.kaway.app.android.kaway.model.Route;
 import com.kaway.app.android.kaway.model.RouteLine;
 import com.kaway.app.android.kaway.model.RouteStop;
@@ -25,6 +27,7 @@ public class RouteProcessor {
     public static MarkerOptions processRouteStop(RouteStop routeStop) {
         return new MarkerOptions()
                 .position(new LatLng(routeStop.getRoutePoint().getLat(), routeStop.getRoutePoint().getLng()))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.jeep_stop_flag))
                 .title(routeStop.getName());
     }
 }
