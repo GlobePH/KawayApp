@@ -5,6 +5,15 @@ public class User {
     String mobileNumber;
     RoutePoint location;
 
+    public User() {
+    }
+
+    public User(long id, String mobileNumber, RoutePoint location) {
+        this.id = id;
+        this.mobileNumber = mobileNumber;
+        this.location = location;
+    }
+
     public long getId() {
         return id;
     }
