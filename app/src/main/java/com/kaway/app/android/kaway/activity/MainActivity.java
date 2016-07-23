@@ -1,13 +1,19 @@
 package com.kaway.app.android.kaway.activity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,6 +29,7 @@ import com.kaway.app.android.kaway.model.RouteStop;
 import com.kaway.app.android.kaway.model.User;
 import com.kaway.app.android.kaway.service.RestService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -43,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     float initialZoom = 18f;
 
     boolean routeListIsShowing = false;
+    boolean isRoutePicked = false;
+
+    RouteListAdapter listAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,14 +65,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (routeListIsShowing) {
-            routeListIsShowing = false;
-            final Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_exit);
-            routeList.setAnimation(slideDown);
-            routeList.setVisibility(View.GONE);
-            resetMapGestures();
+            dismissRouteList();
         } else {
             super.onBackPressed();
         }
+    }
+
+    private void dismissRouteList() {
+        routeListIsShowing = false;
+        final Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_exit);
+        routeList.setAnimation(slideDown);
+        routeList.setVisibility(View.GONE);
+        resetMapGestures();
     }
 
     private void init() {
@@ -96,6 +110,12 @@ public class MainActivity extends AppCompatActivity {
         jeeps = mockData.getJeeps();
         user = mockData.getUser(0);
         initialLocation = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
+
+        listAdapter = new RouteListAdapter();
+        listAdapter.setRoutes(routes);
+        listAdapter.notifyDataSetChanged();
+        routeList.setLayoutManager(new LinearLayoutManager(this));
+        routeList.setAdapter(listAdapter);
     }
 
     private void drawLines() {
@@ -142,5 +162,55 @@ public class MainActivity extends AppCompatActivity {
         map.getUiSettings().setScrollGesturesEnabled(true);
         map.getUiSettings().setZoomGesturesEnabled(true);
         map.getUiSettings().setRotateGesturesEnabled(true);
+    }
+
+    public class RouteListAdapter extends RecyclerView.Adapter<RouteItemViewHolder> {
+        List<Route> routes = new ArrayList<>();
+
+        public void setRoutes(List<Route> routes) {
+            this.routes = routes;
+        }
+
+        @Override
+        public RouteItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            Context context = parent.getContext();
+            LayoutInflater inflater = LayoutInflater.from(context);
+
+            View view = inflater.inflate(R.layout.list_item_route, parent, false);
+            RouteItemViewHolder holder = new RouteItemViewHolder(view);
+            return holder;
+        }
+
+        @Override
+        public void onBindViewHolder(RouteItemViewHolder holder, int position) {
+            holder.bind(routes.get(position));
+        }
+
+        @Override
+        public int getItemCount() {
+            return routes.size();
+        }
+    }
+
+    public class RouteItemViewHolder extends RecyclerView.ViewHolder {
+        View view;
+        View routeColorView;
+        TextView routeText;
+
+        public RouteItemViewHolder(View itemView) {
+            super(itemView);
+            view = itemView;
+            routeColorView = view.findViewById(R.id.routeColorView);
+            routeText = (TextView) view.findViewById(R.id.routeNameView);
+        }
+
+        public void bind(Route route) {
+            routeColorView.setBackgroundColor(route.getRouteColor().rgb());
+            routeText.setText(route.getName());
+            view.setOnClickListener(v -> {
+                dismissRouteList();
+                Toast.makeText(MainActivity.this, "Route: " + route.getName() + " is Picked", Toast.LENGTH_SHORT).show();
+            });
+        }
     }
 }

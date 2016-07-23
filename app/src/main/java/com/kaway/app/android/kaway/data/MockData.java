@@ -100,8 +100,9 @@ public class MockData implements RestService {
 
     private Route createFirstMockRoute() {
         Route route = new Route();
+        route.setName("The Blue Route");
         route.setId(1);
-        route.setRouteColor(new RouteColor(0, 0, 255));
+        route.setRouteColor(new RouteColor(0, 0, 255)); //blue
 
         List<LatLng> list = new ArrayList<>();
         list.add(new LatLng(14.548506f, 121.048764f));
@@ -138,8 +139,9 @@ public class MockData implements RestService {
 
     private Route createSecondMockRoute() {
         Route route = new Route();
+        route.setName("The Red Route");
         route.setId(2);
-        route.setRouteColor(new RouteColor(255, 127, 127));
+        route.setRouteColor(new RouteColor(255, 127, 127)); //red
 
         List<LatLng> list = new ArrayList<>();
         list.add(new LatLng(14.550803f, 121.047585f));
