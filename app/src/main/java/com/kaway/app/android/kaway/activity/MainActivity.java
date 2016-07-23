@@ -84,6 +84,19 @@ public class MainActivity extends AppCompatActivity {
                     .position(initialLocation)
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.user_flat));
             map.addMarker(userMarker);
+
+            mockJeeps();
         }
+    }
+
+    private void mockJeeps() {
+        //Init mock jeeps
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(14.549660f, 121.049173f))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.jeepney_icon)));
+
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(14.549203f, 121.052839f))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.jeepney_icon)));
     }
 }
