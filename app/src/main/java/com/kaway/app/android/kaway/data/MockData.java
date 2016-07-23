@@ -9,11 +9,12 @@ import com.kaway.app.android.kaway.model.RouteLine;
 import com.kaway.app.android.kaway.model.RoutePoint;
 import com.kaway.app.android.kaway.model.RouteStop;
 import com.kaway.app.android.kaway.model.User;
+import com.kaway.app.android.kaway.service.RestService;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MockData {
+public class MockData implements RestService {
 
     List<Route> routes = new ArrayList<>();
     List<RouteStop> routeStops = new ArrayList<>();
@@ -44,6 +45,20 @@ public class MockData {
         return null;
     }
 
+    @Override
+    public List<RouteStop> getStops() {
+        return routeStops;
+    }
+
+    @Override
+    public RouteStop getStop(long id) {
+        for (RouteStop routeStop : routeStops) {
+            if (routeStop.getId() == id)
+                return routeStop;
+        }
+        return null;
+    }
+
     public List<RouteStop> getRouteStops() {
         return routeStops;
     }
@@ -52,7 +67,18 @@ public class MockData {
         return jeeps;
     }
 
-    public User getUser() {
+    @Override
+    public Jeep getJeep(long id) {
+        for (Jeep jeep : jeeps) {
+            if (jeep.getId() == id)
+                return jeep;
+        }
+        return null;
+    }
+
+    @Override
+    public User getUser(long id) {
+
         return user;
     }
 
@@ -75,8 +101,9 @@ public class MockData {
 
     private Route createFirstMockRoute() {
         Route route = new Route();
+        route.setName("The Blue Route");
         route.setId(1);
-        route.setRouteColor(new RouteColor(0, 0, 255));
+        route.setRouteColor(new RouteColor(0, 0, 255)); //blue
 
         List<LatLng> list = new ArrayList<>();
         list.add(new LatLng(14.548506f, 121.048764f));
@@ -113,8 +140,9 @@ public class MockData {
 
     private Route createSecondMockRoute() {
         Route route = new Route();
+        route.setName("The Red Route");
         route.setId(2);
-        route.setRouteColor(new RouteColor(255, 127, 127));
+        route.setRouteColor(new RouteColor(255, 127, 127)); //red
 
         List<LatLng> list = new ArrayList<>();
         list.add(new LatLng(14.550803f, 121.047585f));
