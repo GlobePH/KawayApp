@@ -5,6 +5,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -54,7 +56,10 @@ public class MainActivity extends AppCompatActivity {
     public void onBackPressed() {
         if (routeListIsShowing) {
             routeListIsShowing = false;
+            final Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_exit);
+            routeList.setAnimation(slideDown);
             routeList.setVisibility(View.GONE);
+            resetMapGestures();
         } else {
             super.onBackPressed();
         }
@@ -63,10 +68,17 @@ public class MainActivity extends AppCompatActivity {
     private void init() {
         routeList = (RecyclerView) findViewById(R.id.routeList);
         pickRouteButton = (Button) findViewById(R.id.pickRouteButton);
-        pickRouteButton.setOnClickListener(v -> {
-            routeList.setVisibility(View.VISIBLE);
-            routeListIsShowing = true;
-        });
+        if (pickRouteButton != null) {
+            pickRouteButton.setOnClickListener(v -> {
+                routeListIsShowing = true;
+                final Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_enter);
+                routeList.setVisibility(View.VISIBLE);
+                routeList.setAnimation(slideUp);
+                if (map != null) {
+                    map.getUiSettings().setAllGesturesEnabled(false);
+                }
+            });
+        }
 
         mapFragment = SupportMapFragment.newInstance();
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -112,13 +124,23 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onMapReady(GoogleMap googleMap) {
             map = googleMap;
-
+            map.getUiSettings().setMapToolbarEnabled(false);
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, initialZoom));
+            resetMapGestures();
 
             drawLines();
             drawStops();
             drawJeeps();
             drawUser();
         }
+    }
+
+    private void resetMapGestures() {
+        if (map == null)
+            return;
+        map.getUiSettings().setAllGesturesEnabled(false);
+        map.getUiSettings().setScrollGesturesEnabled(true);
+        map.getUiSettings().setZoomGesturesEnabled(true);
+        map.getUiSettings().setRotateGesturesEnabled(true);
     }
 }

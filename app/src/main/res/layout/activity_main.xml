@@ -29,6 +29,7 @@
             android:layout_height="match_parent"
             android:background="#FFFFFF"
             android:elevation="8dp"
+            android:focusable="true"
             android:visibility="gone" />
     </RelativeLayout>
 </RelativeLayout>
