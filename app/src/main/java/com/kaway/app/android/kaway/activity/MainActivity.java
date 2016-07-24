@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    public final static String IS_JEEP_FLAG = "IS_JEEP_FLAG";
     SupportMapFragment mapFragment;
     GoogleMap map;
     OnMapReadyCallback mapReadyCallback;
@@ -57,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
     RouteListAdapter listAdapter;
 
     Route chosenRoute;
+
+    boolean isDriver = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

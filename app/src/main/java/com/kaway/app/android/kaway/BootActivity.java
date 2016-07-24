@@ -3,6 +3,7 @@ package com.kaway.app.android.kaway;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 
+import com.kaway.app.android.kaway.activity.DebugChooserActivity;
 import com.kaway.app.android.kaway.activity.MainActivity;
 
 public class BootActivity extends AppCompatActivity {
@@ -13,7 +14,7 @@ public class BootActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (!finishApp) {
-            Intent intent = new Intent(this, MainActivity.class);
+            Intent intent = new Intent(this, DebugChooserActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivityForResult(intent, 0);
         } else {
