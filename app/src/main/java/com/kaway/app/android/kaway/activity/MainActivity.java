@@ -1,6 +1,7 @@
 package com.kaway.app.android.kaway.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -55,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
 
     RouteListAdapter listAdapter;
 
+    Route chosenRoute;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +87,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         kawayButton = findViewById(R.id.kawayButton);
+        if (kawayButton != null) {
+            kawayButton.setOnClickListener(v -> {
+                if (chosenRoute != null) {
+                    Intent intent = new Intent(this, DoKawayActivity.class);
+                    startActivity(intent);
+                }
+                hideKaway();
+            });
+        }
         routeList = (RecyclerView) findViewById(R.id.routeList);
         pickRouteButton = (Button) findViewById(R.id.pickRouteButton);
         if (pickRouteButton != null) {
@@ -218,12 +230,13 @@ public class MainActivity extends AppCompatActivity {
                 dismissRouteList();
                 isRoutePicked = true;
                 Toast.makeText(MainActivity.this, "Route: " + route.getName() + " is Picked", Toast.LENGTH_SHORT).show();
-                showKaway();
+                showKaway(route);
             });
         }
     }
 
-    private void showKaway() {
+    private void showKaway(Route route) {
+        chosenRoute = route;
         final Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_enter);
         kawayButton.setVisibility(View.VISIBLE);
         kawayButton.setAnimation(slideUp);
@@ -233,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void hideKaway() {
+        chosenRoute = null;
         isRoutePicked = false;
         final Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_exit);
         kawayButton.setAnimation(slideDown);
