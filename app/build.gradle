@@ -55,4 +55,6 @@ dependencies {
     apt 'com.jakewharton:butterknife-compiler:8.2.1'
     retrolambdaConfig 'net.orfjackal.retrolambda:retrolambda:2.3.0'
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
+    compile 'com.squareup.retrofit2:converter-jackson:2.1.0'
 }

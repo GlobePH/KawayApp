@@ -55,12 +55,20 @@ public class MainActivity extends AppCompatActivity {
 
     RouteListAdapter listAdapter;
 
+    //Mock User-Pass
+    String userName = "katsu.kare.raisu@gmail.com";
+    String password = "12345abc";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         init();
+    }
+
+    private void initConneciton() {
+
     }
 
     @Override
@@ -155,11 +163,15 @@ public class MainActivity extends AppCompatActivity {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, initialZoom));
             resetMapGestures();
 
-            drawLines();
-            drawStops();
-            drawJeeps();
-            drawUser();
+            downloadMapItems();
         }
+    }
+
+    private void downloadMapItems() {
+        drawLines();
+        drawStops();
+        drawJeeps();
+        drawUser();
     }
 
     private void resetMapGestures() {

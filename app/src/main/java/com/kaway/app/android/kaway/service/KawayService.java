@@ -1,10 +1,8 @@
 package com.kaway.app.android.kaway.service;
 
-import com.kaway.app.android.kaway.model.Route;
-import com.kaway.app.android.kaway.model.RouteStop;
 import com.kaway.app.android.kaway.service.servicecallback.AuthCallback;
-
-import java.util.List;
+import com.kaway.app.android.kaway.service.servicecallback.RouteListCallback;
+import com.kaway.app.android.kaway.service.servicecallback.RouteStopsListCallback;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -18,13 +16,13 @@ public interface KawayService {
                              String password);
 
     @GET("http://jcgurango.com/kaway/api/{authKey}/routes/near/{latitude}/{longitude}")
-    Call<List<Route>> getRoutes(@Path("authKey") float key,
-                                @Path("latitude") float lat,
-                                @Path("latitude") float lng);
+    Call<RouteListCallback> getRoutes(@Path("authKey") float key,
+                                      @Path("latitude") float lat,
+                                      @Path("latitude") float lng);
 
     @GET("http://jcgurango.com/kaway/api/{authKey}/routes/{routeid}/stops/{latitude}/{longitude}")
-    Call<List<RouteStop>> getStops(@Path("authKey") float key,
-                                   @Path("routeid") float routeId,
-                                   @Path("latitude") float lat,
-                                   @Path("latitude") float lng);
+    Call<RouteStopsListCallback> getStops(@Path("authKey") float key,
+                                          @Path("routeid") float routeId,
+                                          @Path("latitude") float lat,
+                                          @Path("latitude") float lng);
 }
