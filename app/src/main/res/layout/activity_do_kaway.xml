@@ -10,10 +10,30 @@
     tools:context="com.kaway.app.android.kaway.activity.DoKawayActivity">
 
     <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="Do Kaway Here"
-        android:textSize="20sp" />
+        android:text="Jeepneys have been notified!"
+        android:textSize="24sp"
+        android:layout_marginBottom="32dp" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_centerHorizontal="true"
+        android:text="Papunta na po!!!"
+        android:textSize="24sp"
+        android:layout_marginTop="32dp" />
+
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="256dp"
+        android:layout_height="256dp"
+        android:layout_below="@+id/textView2"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/jeepney_flat_icon" />
 </RelativeLayout>
