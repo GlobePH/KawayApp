@@ -1,12 +1,16 @@
 package com.kaway.app.android.kaway.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -19,7 +23,9 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.kaway.app.android.kaway.R;
 import com.kaway.app.android.kaway.data.MockData;
 import com.kaway.app.android.kaway.helper.RouteProcessor;
@@ -33,7 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-
+    public final static String IS_JEEP_FLAG = "IS_JEEP_FLAG";
     SupportMapFragment mapFragment;
     GoogleMap map;
     OnMapReadyCallback mapReadyCallback;
@@ -55,10 +61,22 @@ public class MainActivity extends AppCompatActivity {
 
     RouteListAdapter listAdapter;
 
+    Route chosenRoute;
+
+    boolean isDriver = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (savedInstanceState == null) {
+            Bundle extras = getIntent().getExtras();
+            if (extras == null) {
+                isDriver = false;
+            } else {
+                isDriver = extras.getBoolean(IS_JEEP_FLAG);
+            }
+        }
 
         init();
     }
@@ -74,6 +92,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if (isDriver) {
+            MenuInflater inflater = getMenuInflater();
+            inflater.inflate(R.menu.menu_main, menu);
+        }
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                showClusters();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void dismissRouteList() {
         routeListIsShowing = false;
         final Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_exit);
@@ -84,6 +121,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void init() {
         kawayButton = findViewById(R.id.kawayButton);
+        if (kawayButton != null) {
+            kawayButton.setOnClickListener(v -> {
+                if (chosenRoute != null) {
+                    Intent intent = new Intent(this, DoKawayActivity.class);
+                    startActivity(intent);
+                }
+                hideKaway();
+            });
+        }
         routeList = (RecyclerView) findViewById(R.id.routeList);
         pickRouteButton = (Button) findViewById(R.id.pickRouteButton);
         if (pickRouteButton != null) {
@@ -99,6 +145,18 @@ public class MainActivity extends AppCompatActivity {
                     map.getUiSettings().setAllGesturesEnabled(false);
                 }
             });
+
+            if (isDriver) {
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle("Kaway - Jeep Mode");
+                }
+                kawayButton.setVisibility(View.GONE);
+                pickRouteButton.setVisibility(View.GONE);
+            } else {
+                if (getSupportActionBar() != null) {
+                    getSupportActionBar().setTitle("Kaway - Passenger");
+                }
+            }
         }
 
         mapFragment = SupportMapFragment.newInstance();
@@ -116,7 +174,11 @@ public class MainActivity extends AppCompatActivity {
         routeStops = mockData.getStops();
         jeeps = mockData.getJeeps();
         user = mockData.getUser(0);
-        initialLocation = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
+
+        if (!isDriver)
+            initialLocation = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
+        else
+            initialLocation = new LatLng(14.549660f, 121.049173f);
 
         listAdapter = new RouteListAdapter();
         listAdapter.setRoutes(routes);
@@ -139,12 +201,55 @@ public class MainActivity extends AppCompatActivity {
 
     private void drawJeeps() {
         for (Jeep jeep : jeeps) {
-            map.addMarker(RouteProcessor.processJeep(jeep));
+            if (jeep.getId() != 0)
+                map.addMarker(RouteProcessor.processJeep(jeep));
         }
     }
 
     private void drawUser() {
         map.addMarker(RouteProcessor.processUser(user));
+    }
+
+    private void drawDriver() {
+        map.addMarker(new MarkerOptions()
+                .position(initialLocation)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.jeepney_user)));
+    }
+
+    private void showClusters() {
+        if (map != null && isDriver) {
+            mockClusters();
+        }
+    }
+
+    private void mockClusters() {
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(14.551024, 121.049633))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.cluster_icon)));
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(14.551060, 121.049652))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.cluster_icon)));
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(14.551091, 121.049636))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.cluster_icon)));
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(14.550406, 121.048438))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.cluster_icon)));
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(14.550364, 121.048435))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.cluster_icon)));
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(14.550400, 121.048456))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.cluster_icon)));
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(14.549734, 121.050139))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.cluster_icon)));
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(14.549760, 121.050111))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.cluster_icon)));
+        map.addMarker(new MarkerOptions()
+                .position(new LatLng(14.549734, 121.050100))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.cluster_icon)));
     }
 
     class MapReadyCallback implements OnMapReadyCallback {
@@ -158,7 +263,10 @@ public class MainActivity extends AppCompatActivity {
             drawLines();
             drawStops();
             drawJeeps();
-            drawUser();
+            if (!isDriver)
+                drawUser();
+            else
+                drawDriver();
         }
     }
 
@@ -218,12 +326,13 @@ public class MainActivity extends AppCompatActivity {
                 dismissRouteList();
                 isRoutePicked = true;
                 Toast.makeText(MainActivity.this, "Route: " + route.getName() + " is Picked", Toast.LENGTH_SHORT).show();
-                showKaway();
+                showKaway(route);
             });
         }
     }
 
-    private void showKaway() {
+    private void showKaway(Route route) {
+        chosenRoute = route;
         final Animation slideUp = AnimationUtils.loadAnimation(this, R.anim.slide_up_enter);
         kawayButton.setVisibility(View.VISIBLE);
         kawayButton.setAnimation(slideUp);
@@ -233,6 +342,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void hideKaway() {
+        chosenRoute = null;
         isRoutePicked = false;
         final Animation slideDown = AnimationUtils.loadAnimation(this, R.anim.slide_down_exit);
         kawayButton.setAnimation(slideDown);
