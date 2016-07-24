@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +28,22 @@ import com.kaway.app.android.kaway.model.Jeep;
 import com.kaway.app.android.kaway.model.Route;
 import com.kaway.app.android.kaway.model.RouteStop;
 import com.kaway.app.android.kaway.model.User;
+import com.kaway.app.android.kaway.service.KawayService;
 import com.kaway.app.android.kaway.service.RestService;
+import com.kaway.app.android.kaway.service.servicecallback.AuthCallback;
+import com.kaway.app.android.kaway.service.servicecallback.ResultsProcessor;
+import com.kaway.app.android.kaway.service.servicecallback.RouteListCallback;
+import com.kaway.app.android.kaway.service.servicecallback.RouteStopsListCallback;
+import com.kaway.app.android.kaway.service.servicecallback.UserAuthJson;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -56,8 +69,12 @@ public class MainActivity extends AppCompatActivity {
     RouteListAdapter listAdapter;
 
     //Mock User-Pass
-    String userName = "katsu.kare.raisu@gmail.com";
-    String password = "12345abc";
+    String userEmail = "katsu.kare.raisu@gmail.com";
+    String userPassword = "12345abc";
+    String apiKey = "";
+
+    Retrofit retrofit;
+    KawayService kawayService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,10 +82,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         init();
-    }
-
-    private void initConneciton() {
-
+        initializeMapItems();
     }
 
     @Override
@@ -115,22 +129,6 @@ public class MainActivity extends AppCompatActivity {
         ft.commit();
         mapReadyCallback = new MapReadyCallback();
         mapFragment.getMapAsync(mapReadyCallback);
-
-        initializeMapItems();
-    }
-
-    private void initializeMapItems() {
-        routes = mockData.getRoutes();
-        routeStops = mockData.getStops();
-        jeeps = mockData.getJeeps();
-        user = mockData.getUser(0);
-        initialLocation = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
-
-        listAdapter = new RouteListAdapter();
-        listAdapter.setRoutes(routes);
-        listAdapter.notifyDataSetChanged();
-        routeList.setLayoutManager(new LinearLayoutManager(this));
-        routeList.setAdapter(listAdapter);
     }
 
     private void drawLines() {
@@ -163,15 +161,84 @@ public class MainActivity extends AppCompatActivity {
             map.moveCamera(CameraUpdateFactory.newLatLngZoom(initialLocation, initialZoom));
             resetMapGestures();
 
-            downloadMapItems();
+            initConnection();
         }
     }
 
+    private void initConnection() {
+        retrofit = new Retrofit.Builder()
+                .baseUrl("http://jcgurango.com/kaway/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+
+        kawayService = retrofit.create(KawayService.class);
+
+        UserAuthJson userAuthJson = new UserAuthJson(userEmail, userPassword);
+        Call<AuthCallback> authCall = kawayService.login(userAuthJson);
+        authCall.enqueue(new Callback<AuthCallback>() {
+            @Override
+            public void onResponse(Call<AuthCallback> call, Response<AuthCallback> response) {
+                if (response.code() == 200) {
+                    AuthCallback authCallback = response.body();
+                    apiKey = authCallback.key;
+                    downloadMapItems();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<AuthCallback> call, Throwable t) {
+                Toast.makeText(MainActivity.this, "DEBUG: Login Failed, Reload the App", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void downloadMapItems() {
-        drawLines();
-        drawStops();
+        downloadRoutes();
+        downloadStops();
+
+//        drawLines();
+//        drawStops();
         drawJeeps();
         drawUser();
+    }
+
+    private void downloadRoutes() {
+        Call<RouteListCallback> routeListCallbackCall = kawayService.getRoutes(apiKey, user.getLocation().getLat(), user.getLocation().getLng());
+
+        routeListCallbackCall.enqueue(new Callback<RouteListCallback>() {
+            @Override
+            public void onResponse(Call<RouteListCallback> call, Response<RouteListCallback> response) {
+                Log.e("MainActivity", "Routes: " + response.code());
+                if (response.code() == 200) {
+                    Toast.makeText(MainActivity.this, "Routes Success", Toast.LENGTH_SHORT).show();
+                    routes = ResultsProcessor.processRoutesResult(response.body());
+                    drawLines();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RouteListCallback> call, Throwable t) {
+
+            }
+        });
+    }
+
+    private void downloadStops() {
+
+    }
+
+    private void initializeMapItems() {
+//        routes = mockData.getRoutes();
+//        routeStops = mockData.getStops();
+        jeeps = mockData.getJeeps();
+        user = mockData.getUser(0);
+        initialLocation = new LatLng(user.getLocation().getLat(), user.getLocation().getLng());
+
+        listAdapter = new RouteListAdapter();
+        listAdapter.setRoutes(routes);
+        listAdapter.notifyDataSetChanged();
+//        routeList.setLayoutManager(new LinearLayoutManager(this));
+//        routeList.setAdapter(listAdapter);
     }
 
     private void resetMapGestures() {

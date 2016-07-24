@@ -1,9 +1,21 @@
 package com.kaway.app.android.kaway.service.servicecallback;
 
+import com.google.gson.annotations.SerializedName;
+
 public class WaypointJson {
-    long id;
-    long route_id;
-    long index;
-    float latitude;
-    float longitude;
+
+    @SerializedName("id")
+    public long id;
+
+    @SerializedName("route_id")
+    public long route_id;
+
+    @SerializedName("index")
+    public long index;
+
+    @SerializedName("latitude")
+    public float latitude;
+
+    @SerializedName("longitude")
+    public float longitude;
 }

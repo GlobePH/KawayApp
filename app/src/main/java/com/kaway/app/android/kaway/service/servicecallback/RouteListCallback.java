@@ -1,10 +1,13 @@
 package com.kaway.app.android.kaway.service.servicecallback;
 
-import com.kaway.app.android.kaway.model.Route;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 public class RouteListCallback {
-    boolean success;
-    List<Route> routes;
+    @SerializedName("success")
+    public boolean success;
+
+    @SerializedName("routes")
+    public List<RouteJson> routes;
 }

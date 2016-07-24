@@ -1,13 +1,27 @@
 package com.kaway.app.android.kaway.service.servicecallback;
 
-public class AuthCallback {
-    public String api_key;
+import com.google.gson.annotations.SerializedName;
 
-    public String getApi_key() {
-        return api_key;
+public class AuthCallback {
+    @SerializedName("success")
+    public boolean success;
+
+    @SerializedName("key")
+    public String key;
+
+    public boolean isSuccess() {
+        return success;
     }
 
-    public void setApi_key(String api_key) {
-        this.api_key = api_key;
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

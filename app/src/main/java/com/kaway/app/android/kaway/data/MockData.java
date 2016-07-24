@@ -29,7 +29,7 @@ public class MockData implements RestService {
         jeeps.add(new Jeep(0, "Blue Jeep", routes.get(0), new RoutePoint(new LatLng(14.549660f, 121.049173f))));
         jeeps.add(new Jeep(1, "Red Jeep", routes.get(1), new RoutePoint(new LatLng(14.549203f, 121.052839f))));
 
-        user = new User(0, "1234567890", new RoutePoint(new LatLng(14.550801f, 121.049578f)));
+        user = new User(0, "1234567890", new RoutePoint(new LatLng(14.5531094f, 121.0518606f)));
     }
 
     public List<Route> getRoutes() {
