@@ -29,7 +29,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".activity.MainActivity" />
-        <activity android:name=".activity.DoKawayActivity"></activity>
+        <activity android:name=".activity.DoKawayActivity" />
+        <activity android:name=".activity.DebugChooserActivity"></activity>
     </application>
 
 </manifest>
